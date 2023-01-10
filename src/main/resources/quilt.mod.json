@@ -5,18 +5,18 @@
 	},
 	"quilt_loader": {
 		"group": "com.dm.earth",
-		"id": "modid",
+		"id": "conitator",
 		"version": "${version}",
 		"metadata": {
-			"name": "Mod Name",
+			"name": "Conitator",
 			"description": "A short description of your mod.",
 			"contributors": {
 				"DM Earth": "Owner"
 			},
 			"contact": {
-				"sources": "https://github.com/DM-Earth/Modid"
+				"sources": "https://github.com/DM-Earth/Conitator"
 			},
-			"icon": "assets/modid/icon.png",
+			"icon": "assets/conitator/icon.png",
 			"license": "GPL-3.0-or-later"
 		},
 		"intermediate_mappings": "net.fabricmc:intermediary",
@@ -35,6 +35,5 @@
 				"versions": ">=1.19.3"
 			}
 		]
-	},
-	"mixin": "modid.mixins.json"
+	}
 }
