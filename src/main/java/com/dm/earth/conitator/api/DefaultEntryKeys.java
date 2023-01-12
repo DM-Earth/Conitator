@@ -10,8 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
-public final class DefaultEntryKeys {
-	private DefaultEntryKeys() {}
+public class DefaultEntryKeys {
 
 	public static final Identifier ITEM = ConitatorMod.id("items");
 	public static final Identifier BLOCK = ConitatorMod.id("blocks");
