@@ -1,4 +1,4 @@
-package com.dm.earth.conitator.builder.core;
+package com.dm.earth.conitator.api.builder.core;
 
 import com.dm.earth.conitator.api.Conitator;
 import net.minecraft.util.Identifier;

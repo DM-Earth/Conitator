@@ -35,4 +35,14 @@ public class RenderLayerEntryKey implements Conitator.EntryKey<Supplier<RenderLa
 		return DefaultEntryKeys.RENDER_LAYER;
 	}
 
+	public void put(Supplier<RenderLayer> layer, Identifier id) {
+		if (MinecraftQuiltLoader.getEnvironmentType() == EnvType.CLIENT && layer != null)
+			map.entrySet().stream().filter(s -> s.getKey().get().equals(layer.get())).findFirst()
+					.ifPresentOrElse(entry -> entry.getValue().add(id), () -> {
+						ArrayList<Identifier> l = new ArrayList<>();
+						l.add(id);
+						map.put(layer, l);
+					});
+	}
+
 }
