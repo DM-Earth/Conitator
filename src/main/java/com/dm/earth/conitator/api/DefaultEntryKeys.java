@@ -3,7 +3,7 @@ package com.dm.earth.conitator.api;
 import java.util.function.Supplier;
 import com.dm.earth.conitator.ConitatorMod;
 import com.dm.earth.conitator.api.Conitator.EntryKey;
-import com.dm.earth.conitator.impl.entry_key.RenderLayerEntryKey;
+import com.dm.earth.conitator.impl.entry_keys.client.RenderLayerEntryKey;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.Item;
@@ -12,9 +12,11 @@ import net.minecraft.util.Identifier;
 
 public class DefaultEntryKeys {
 
-	public static final Identifier ITEM = ConitatorMod.id("items");
-	public static final Identifier BLOCK = ConitatorMod.id("blocks");
-	public static final Identifier RENDER_LAYER = ConitatorMod.id("render_layers");
+	private DefaultEntryKeys() {}
+
+	public static final Identifier ITEM = ConitatorMod.id("common/items");
+	public static final Identifier BLOCK = ConitatorMod.id("common/blocks");
+	public static final Identifier RENDER_LAYER = ConitatorMod.id("client/render_layers");
 
 	public static EntryKey<Item> item() {
 		return EntryKey.ofRegistry(ITEM, obj -> obj != null && obj instanceof Item,

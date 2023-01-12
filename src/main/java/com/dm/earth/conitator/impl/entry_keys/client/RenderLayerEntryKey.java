@@ -1,4 +1,4 @@
-package com.dm.earth.conitator.impl.entry_key;
+package com.dm.earth.conitator.impl.entry_keys.client;
 
 import java.util.ArrayList;
 import java.util.HashMap;

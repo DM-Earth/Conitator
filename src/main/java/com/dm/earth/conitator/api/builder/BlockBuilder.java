@@ -6,7 +6,7 @@ import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
 import com.dm.earth.conitator.api.Conitator;
 import com.dm.earth.conitator.api.DefaultEntryKeys;
 import com.dm.earth.conitator.api.builder.core.RegistrationBuilder;
-import com.dm.earth.conitator.impl.entry_key.RenderLayerEntryKey;
+import com.dm.earth.conitator.impl.entry_keys.client.RenderLayerEntryKey;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.render.RenderLayer;
