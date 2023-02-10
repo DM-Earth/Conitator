@@ -1,12 +1,17 @@
 package com.dm.earth.conitator.api.builder;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import org.jetbrains.annotations.Nullable;
 import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
+
 import com.dm.earth.conitator.api.Conitator;
 import com.dm.earth.conitator.api.DefaultEntryKeys;
 import com.dm.earth.conitator.api.builder.core.RegistrationBuilder;
 import com.dm.earth.conitator.impl.entry_keys.client.RenderLayerEntryKey;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.render.RenderLayer;
@@ -65,9 +70,12 @@ public class BlockBuilder<T extends Block> extends RegistrationBuilder<T> {
 		return this;
 	}
 
-	public BlockBuilder<T> withItem() {
-		this.withItem(ItemBuilder.create(this.conitator, this.id,
-				qbs -> new BlockItem(Registries.BLOCK.get(this.id), qbs)));
+	public BlockBuilder<T> withItem(@Nullable Consumer<ItemBuilder<BlockItem>> consumer) {
+		ItemBuilder<BlockItem> builder = ItemBuilder.create(this.conitator, this.id,
+				bs -> new BlockItem(this.get(), bs));
+		if (consumer != null)
+			consumer.accept(builder);
+		this.withItem(builder);
 		return this;
 	}
 

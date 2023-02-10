@@ -13,9 +13,11 @@ public class RenderLayerActor implements Conitator.Actor<Void> {
 	@Override
 	public Void act(Conitator instance, Void object) {
 		instance.getEntry(DefaultEntryKeys.RENDER_LAYER).ifPresent(entry -> {
-			if (entry.getKey() instanceof RenderLayerEntryKey k)
-				entry.getValue().forEach(id -> BlockRenderLayerMap.put(k.get(instance, id).get(),
-						Registries.BLOCK.get(id)));
+			if (entry.getKey() instanceof RenderLayerEntryKey k) {
+				entry.getValue().forEach(id -> {
+					k.get(instance, id).ifPresent(l -> BlockRenderLayerMap.put(l.get(), Registries.BLOCK.get(id)));
+				});
+			}
 		});
 		return object;
 	}

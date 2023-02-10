@@ -3,31 +3,32 @@ package com.dm.earth.conitator.impl.entry_keys.client;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
-import org.jetbrains.annotations.ApiStatus.Internal;
+
 import org.quiltmc.loader.api.minecraft.MinecraftQuiltLoader;
+
 import com.dm.earth.conitator.api.Conitator;
 import com.dm.earth.conitator.api.DefaultEntryKeys;
+
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 
-@Internal
 public class RenderLayerEntryKey implements Conitator.EntryKey<Supplier<RenderLayer>> {
 
 	protected HashMap<Supplier<RenderLayer>, ArrayList<Identifier>> map = new HashMap<>();
 
 	@Override
 	public boolean test(Object arg0) {
-		return arg0 != null && arg0 instanceof Supplier<?> supplier
-				&& MinecraftQuiltLoader.getEnvironmentType() == EnvType.CLIENT
+		return arg0 instanceof Supplier<?> supplier && MinecraftQuiltLoader.getEnvironmentType() == EnvType.CLIENT
 				&& supplier.get() instanceof RenderLayer;
 	}
 
 	@Override
-	public Supplier<RenderLayer> get(Conitator instance, Identifier arg0) {
-		return map.entrySet().stream().filter(entry -> entry.getValue().contains(arg0))
-				.map(Map.Entry::getKey).findFirst().orElse(null);
+	public Optional<Supplier<RenderLayer>> get(Conitator instance, Identifier arg0) {
+		return map.entrySet().stream().filter(entry -> entry.getValue().contains(arg0)).map(Map.Entry::getKey)
+				.findFirst();
 	}
 
 	@Override

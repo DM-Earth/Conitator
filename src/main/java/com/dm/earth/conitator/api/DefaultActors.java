@@ -5,7 +5,8 @@ import net.minecraft.util.Identifier;
 
 public class DefaultActors {
 
-	private DefaultActors() {}
+	private DefaultActors() {
+	}
 
 	public static final Identifier RENDER_LAYER = ConitatorMod.id("client/render_layers");
 
