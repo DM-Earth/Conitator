@@ -1,4 +1,4 @@
-package com.dm.earth.conitator.impl.datagen.entry_keys;
+package com.dm.earth.conitator.impl.datagen.entry_keys.core;
 
 import java.util.Optional;
 

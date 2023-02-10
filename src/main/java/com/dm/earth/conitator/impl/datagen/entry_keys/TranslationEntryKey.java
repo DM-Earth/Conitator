@@ -3,6 +3,7 @@ package com.dm.earth.conitator.impl.datagen.entry_keys;
 import org.quiltmc.qsl.base.api.event.Event;
 
 import com.dm.earth.conitator.api.DefaultEntryKeys;
+import com.dm.earth.conitator.impl.datagen.entry_keys.core.DatagenEntryKey;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
