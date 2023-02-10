@@ -15,9 +15,11 @@ public class DefaultEntryKeys {
 
 	public static final Identifier ITEM = ConitatorMod.id("/common/registry/items");
 	public static final Identifier BLOCK = ConitatorMod.id("/common/registry/blocks");
+	public static final Identifier FLUID = ConitatorMod.id("/common/registry/fluids");
 
 	public static final Identifier ITEM_TAG = ConitatorMod.id("/datagen/tags/items");
 	public static final Identifier BLOCK_TAG = ConitatorMod.id("/datagen/tags/blocks");
+	public static final Identifier FLUID_TAG = ConitatorMod.id("/datagen/tags/fluids");
 
 	public static Identifier translationId(String language) {
 		return ConitatorMod.id("/datagen/translation/" + language);

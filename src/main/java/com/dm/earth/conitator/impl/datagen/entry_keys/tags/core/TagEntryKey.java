@@ -79,6 +79,10 @@ public abstract class TagEntryKey<T> extends DatagenEntryKey<TagEntryKey.Conitat
 		this.event.register(callback);
 	}
 
+	public void register(TagKey<T> tag, Consumer<ConitatorTagProvider<T>.FabricTagBuilder> consumer) {
+		this.registerCallback(new SimpleGenerateTagsCallback<>(tag, consumer));
+	}
+
 	@Override
 	public ConitatorTagProvider<T> createProvider(FabricDataOutput output) {
 		return null;

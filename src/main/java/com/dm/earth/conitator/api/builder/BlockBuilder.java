@@ -1,5 +1,7 @@
 package com.dm.earth.conitator.api.builder;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -13,6 +15,7 @@ import com.dm.earth.conitator.api.DefaultEntryKeys;
 import com.dm.earth.conitator.api.builder.core.RegistrationBuilder;
 import com.dm.earth.conitator.impl.client.events.ClientInitCallback;
 import com.dm.earth.conitator.impl.datagen.entry_keys.TranslationEntryKey;
+import com.dm.earth.conitator.impl.datagen.entry_keys.tags.BlockTagEntryKey;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -20,6 +23,8 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
 public class BlockBuilder<T extends Block> extends RegistrationBuilder<T> {
@@ -55,6 +60,16 @@ public class BlockBuilder<T extends Block> extends RegistrationBuilder<T> {
 				.ifPresent(entry -> ((TranslationEntryKey) entry.getKey())
 						.registerCallback(builder -> builder.add(this.get(), name)));
 		return this;
+	}
+
+	public BlockBuilder<T> tag(Collection<TagKey<Block>> tags) {
+		this.conitator.getEntry(DefaultEntryKeys.BLOCK_TAG).ifPresent(
+				entry -> tags.forEach(t -> ((BlockTagEntryKey) entry.getKey()).register(t, e -> e.add(this.get()))));
+		return this;
+	}
+
+	public BlockBuilder<T> tag(Identifier... tags) {
+		return this.tag(Arrays.stream(tags).map(t -> TagKey.of(RegistryKeys.BLOCK, t)).toList());
 	}
 
 	@Override
