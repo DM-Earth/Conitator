@@ -20,7 +20,9 @@
 			"license": "GPL-3.0-or-later"
 		},
 		"intermediate_mappings": "net.fabricmc:intermediary",
-		"entrypoints": {},
+		"entrypoints": {
+			"client_init": "com.dm.earth.conitator.impl.client.ClientInit"
+		},
 		"depends": [
 			{
 				"id": "quilt_loader",
