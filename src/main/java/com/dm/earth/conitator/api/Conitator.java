@@ -107,13 +107,11 @@ public interface Conitator {
 	void loadDatagen(FabricDataGenerator dataGenerator);
 
 	default Optional<Map.Entry<EntryKey<?>, ArrayList<Identifier>>> getEntry(Identifier id) {
-		return Optional.ofNullable(this.getEntries().entrySet().stream()
-				.filter(entry -> entry.getKey().getId().equals(id)).findFirst().orElse(null));
+		return this.getEntries().entrySet().stream().filter(entry -> entry.getKey().getId().equals(id)).findFirst();
 	}
 
 	default Optional<Map.Entry<EntryKey<?>, ArrayList<Identifier>>> findFitEntry(Object obj) {
-		return Optional.ofNullable(this.getEntries().entrySet().stream()
-				.filter(entry -> entry.getKey().test(obj)).findFirst().orElse(null));
+		return this.getEntries().entrySet().stream().filter(entry -> entry.getKey().test(obj)).findFirst();
 	}
 
 }
