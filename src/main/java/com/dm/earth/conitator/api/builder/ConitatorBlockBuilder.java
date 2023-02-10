@@ -15,6 +15,7 @@ import com.dm.earth.conitator.api.Conitator;
 import com.dm.earth.conitator.api.DefaultEntryKeys;
 import com.dm.earth.conitator.api.builder.core.RegistrationBuilder;
 import com.dm.earth.conitator.impl.client.events.ClientInitCallback;
+import com.dm.earth.conitator.impl.datagen.entry_keys.BlockLootTableEntryKey;
 import com.dm.earth.conitator.impl.datagen.entry_keys.ModelEntryKey;
 import com.dm.earth.conitator.impl.datagen.entry_keys.TranslationEntryKey;
 import com.dm.earth.conitator.impl.datagen.entry_keys.tags.BlockTagEntryKey;
@@ -25,6 +26,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.data.client.model.BlockStateModelGenerator;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.loot.LootTable;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
@@ -37,6 +39,13 @@ public class ConitatorBlockBuilder<T extends Block> extends RegistrationBuilder<
 	public static interface BlockItemModelBuildConsumer {
 
 		void accept(BlockStateModelGenerator generator, Item item, Block block);
+
+	}
+
+	@FunctionalInterface
+	public static interface BlockItemLootTableBuildConsumer {
+
+		void accept(BiConsumer<Identifier, LootTable.Builder> consumer, Item item, Block block);
 
 	}
 
@@ -108,17 +117,31 @@ public class ConitatorBlockBuilder<T extends Block> extends RegistrationBuilder<
 		return this;
 	}
 
-	public <V extends BlockItem> ConitatorBlockBuilder<T> withItem(ConitatorItemBuilder<V> item) {
+	public ConitatorBlockBuilder<T> loot(BiConsumer<BiConsumer<Identifier, LootTable.Builder>, Block> consumer) {
+		this.conitator.getEntry(DefaultEntryKeys.BLOCK_LOOT_TABLE)
+				.ifPresent(entry -> ((BlockLootTableEntryKey) entry)
+						.registerCallback(g -> consumer.accept(g, this.get())));
+		return this;
+	}
+
+	public ConitatorBlockBuilder<T> loot(BlockItemLootTableBuildConsumer consumer) {
+		this.conitator.getEntry(DefaultEntryKeys.BLOCK_LOOT_TABLE)
+				.ifPresent(entry -> ((BlockLootTableEntryKey) entry)
+						.registerCallback(g -> consumer.accept(g, this.item.get(), this.get())));
+		return this;
+	}
+
+	public <V extends BlockItem> ConitatorBlockBuilder<T> item(ConitatorItemBuilder<V> item) {
 		this.item = item;
 		return this;
 	}
 
-	public ConitatorBlockBuilder<T> withItem(@Nullable Consumer<ConitatorItemBuilder<BlockItem>> consumer) {
+	public ConitatorBlockBuilder<T> item(@Nullable Consumer<ConitatorItemBuilder<BlockItem>> consumer) {
 		ConitatorItemBuilder<BlockItem> builder = ConitatorItemBuilder.create(this.conitator, this.id,
 				bs -> new BlockItem(this.get(), bs));
 		if (consumer != null)
 			consumer.accept(builder);
-		this.withItem(builder);
+		this.item(builder);
 		return this;
 	}
 

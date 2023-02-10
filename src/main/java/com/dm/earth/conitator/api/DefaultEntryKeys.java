@@ -26,6 +26,7 @@ public class DefaultEntryKeys {
 	public static final Identifier FLUID_TAG = ConitatorMod.id("/datagen/tags/fluids");
 
 	public static final Identifier MODEL = ConitatorMod.id("/datagen/models");
+	public static final Identifier BLOCK_LOOT_TABLE = ConitatorMod.id("/datagen/loot_tables");
 
 	public static Identifier translationId(String language) {
 		return ConitatorMod.id("/datagen/translation/" + language);
