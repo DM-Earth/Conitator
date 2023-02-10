@@ -1,5 +1,6 @@
 package com.dm.earth.conitator.api.builder;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.quiltmc.qsl.item.setting.api.QuiltItemSettings;
@@ -7,6 +8,7 @@ import org.quiltmc.qsl.item.setting.api.QuiltItemSettings;
 import com.dm.earth.conitator.api.Conitator;
 import com.dm.earth.conitator.api.DefaultEntryKeys;
 import com.dm.earth.conitator.api.builder.core.RegistrationBuilder;
+import com.dm.earth.conitator.impl.datagen.entry_keys.TranslationEntryKey;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents.ModifyEntries;
@@ -33,9 +35,9 @@ public class ItemBuilder<T extends Item> extends RegistrationBuilder<T> {
 		super(conitator, id);
 	}
 
-	public ItemBuilder<T> settings(Function<QuiltItemSettings, QuiltItemSettings> func) {
+	public ItemBuilder<T> settings(Consumer<QuiltItemSettings> func) {
 		if (!this.isBuilt())
-			this.settings = func.apply(settings);
+			func.accept(settings);
 		return this;
 	}
 
@@ -46,6 +48,13 @@ public class ItemBuilder<T extends Item> extends RegistrationBuilder<T> {
 
 	public ItemBuilder<T> itemGroup(ItemGroup group) {
 		this.itemGroup(group, entries -> entries.addItem(this.get()));
+		return this;
+	}
+
+	public ItemBuilder<T> translation(String language, String name) {
+		this.conitator.getEntry(DefaultEntryKeys.translationId(language))
+				.ifPresent(entry -> ((TranslationEntryKey) entry.getKey())
+						.registerCallback(builder -> builder.add(this.get(), name)));
 		return this;
 	}
 

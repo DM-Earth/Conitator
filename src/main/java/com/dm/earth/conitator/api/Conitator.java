@@ -1,13 +1,16 @@
 package com.dm.earth.conitator.api;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
 import org.jetbrains.annotations.Nullable;
+
 import com.dm.earth.conitator.impl.ConitatorImpl;
+
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
@@ -97,21 +100,11 @@ public interface Conitator {
 
 	}
 
-	interface Actor<T> {
-
-		T act(Conitator instance, T object);
-
-		Identifier getId();
-
-	}
-
 	Map<EntryKey<?>, ArrayList<Identifier>> getEntries();
-
-	List<Actor<?>> getActors();
 
 	Conitator apply(EntryKey<?>... entryKeys);
 
-	Conitator apply(Actor<?>... actors);
+	void loadDatagen(FabricDataGenerator dataGenerator);
 
 	default Optional<Map.Entry<EntryKey<?>, ArrayList<Identifier>>> getEntry(Identifier id) {
 		return Optional.ofNullable(this.getEntries().entrySet().stream()

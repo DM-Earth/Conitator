@@ -6,11 +6,13 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
+import org.quiltmc.qsl.block.extensions.api.client.BlockRenderLayerMap;
 
 import com.dm.earth.conitator.api.Conitator;
 import com.dm.earth.conitator.api.DefaultEntryKeys;
 import com.dm.earth.conitator.api.builder.core.RegistrationBuilder;
-import com.dm.earth.conitator.impl.entry_keys.client.RenderLayerEntryKey;
+import com.dm.earth.conitator.impl.client.events.ClientInitCallback;
+import com.dm.earth.conitator.impl.datagen.entry_keys.TranslationEntryKey;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -48,6 +50,13 @@ public class BlockBuilder<T extends Block> extends RegistrationBuilder<T> {
 		return this;
 	}
 
+	public BlockBuilder<T> translation(String language, String name) {
+		this.conitator.getEntry(DefaultEntryKeys.translationId(language))
+				.ifPresent(entry -> ((TranslationEntryKey) entry.getKey())
+						.registerCallback(builder -> builder.add(this.get(), name)));
+		return this;
+	}
+
 	@Override
 	protected T build() {
 		T block = factory.apply(settings);
@@ -56,11 +65,7 @@ public class BlockBuilder<T extends Block> extends RegistrationBuilder<T> {
 
 		this.conitator.getEntry(DefaultEntryKeys.BLOCK)
 				.ifPresent(entry -> entry.getValue().add(this.id));
-		this.conitator.getEntry(DefaultEntryKeys.RENDER_LAYER).ifPresent(entry -> {
-			if (entry.getKey() instanceof RenderLayerEntryKey rEntryKey)
-				rEntryKey.put(this.renderLayer, this.id);
-			entry.getValue().add(id);
-		});
+		ClientInitCallback.registerSafe(() -> BlockRenderLayerMap.put(this.renderLayer.get(), block));
 
 		return block;
 	}
