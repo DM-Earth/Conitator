@@ -1,5 +1,7 @@
 package com.dm.earth.conitator.impl.client.color;
 
+import org.quiltmc.loader.api.minecraft.ClientOnly;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.item.ItemColorProvider;
@@ -8,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
 @FunctionalInterface
+@ClientOnly
 public interface SimpleColorProvider extends ItemColorProvider, BlockColorProvider {
 
 	int getColor(int tintIndex);

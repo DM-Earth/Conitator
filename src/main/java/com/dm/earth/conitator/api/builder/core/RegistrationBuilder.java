@@ -21,17 +21,30 @@ public abstract class RegistrationBuilder<O, T extends O> {
 
 	/**
 	 * @param conitator The conitator of this builder
-	 * @param id        The registration {@code Identifier} of this builder
+	 * @param id        The registration {@link Identifier} of this builder
 	 */
 	protected RegistrationBuilder(Conitator conitator, Identifier id) {
 		this.conitator = conitator;
 		this.id = id;
 	}
 
+	/**
+	 * Execute something with the instance after built.
+	 *
+	 * @param consumer The consumer
+	 */
 	public void afterBuilt(Consumer<T> consumer) {
 		this.afterBuiltList.add(consumer);
 	}
 
+	/**
+	 * Attach a {@link RegistryEntryAttachment} to this builder.
+	 *
+	 * @param <U>        The type of argument of the target REA
+	 * @param <A>        The type of REA
+	 * @param attachment The REA
+	 * @param arg        The argument of the target REA
+	 */
 	public <U, A extends RegistryEntryAttachment<O, U>> void attachREA(A attachment, U arg) {
 		this.afterBuilt(r -> attachment.put(r, arg));
 	}

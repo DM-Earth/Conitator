@@ -29,19 +29,19 @@ public interface Conitator {
 	}
 
 	/**
-	 * An EntryKey is a key of the entry map in the {@code Conitator} and it will be
-	 * mapped into a list of {@code Identifier}.
+	 * An EntryKey is a key of the entry map in the {@link Conitator} and it will be
+	 * mapped into a list of {@link Identifier}.
 	 */
 	interface EntryKey<T> extends Predicate<Object> {
 
 		/**
-		 * Create an EntryKey based on a {@code Registry}.
+		 * Create an EntryKey based on a {@link Registry}.
 		 *
 		 * @param <T>       The type of the registration
 		 * @param id        The id of this EntryKey
 		 * @param predicate Checker of this EntryKey if the given object is type of the
 		 *                  registration
-		 * @param registry  The {@code Registry}
+		 * @param registry  The {@link Registry}
 		 * @return The created EntryKey
 		 */
 		static <T> EntryKey<T> ofRegistry(Identifier id, Predicate<Object> predicate,
