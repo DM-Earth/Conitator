@@ -2,6 +2,7 @@ package com.dm.earth.conitator.api.builder;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -101,6 +102,10 @@ public class ConitatorBlockBuilder<T extends Block> extends RegistrationBuilder<
 		return this.tag(Arrays.stream(tags).map(t -> TagKey.of(RegistryKeys.BLOCK, t)).toList());
 	}
 
+	public ConitatorBlockBuilder<T> tag(TagKey<Block> tag) {
+		return this.tag(List.of(tag));
+	}
+
 	public ConitatorBlockBuilder<T> tagBoth(Collection<Identifier> tags) {
 		safeExecuteItem(i -> i.tag(tags.toArray(new Identifier[0])));
 		return this.tag(tags.toArray(new Identifier[0]));
@@ -187,6 +192,10 @@ public class ConitatorBlockBuilder<T extends Block> extends RegistrationBuilder<
 	public ConitatorBlockBuilder<T> flammable(FlammableBlockEntry entry) {
 		this.attachREA(BlockContentRegistries.FLAMMABLE, entry);
 		return this;
+	}
+
+	public ConitatorBlockBuilder<T> flammable(int burn, int spread) {
+		return this.flammable(new FlammableBlockEntry(burn, spread));
 	}
 
 	public ConitatorBlockBuilder<T> enchantingBoost(EnchantingBooster booster) {
