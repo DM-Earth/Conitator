@@ -2,6 +2,9 @@ package com.dm.earth.conitator.api;
 
 import com.dm.earth.conitator.ConitatorMod;
 import com.dm.earth.conitator.api.Conitator.EntryKey;
+import com.dm.earth.conitator.impl.datagen.entry_keys.BlockLootTableEntryKey;
+import com.dm.earth.conitator.impl.datagen.entry_keys.ModelEntryKey;
+import com.dm.earth.conitator.impl.datagen.entry_keys.TranslationEntryKey;
 import com.dm.earth.conitator.impl.datagen.entry_keys.tags.BlockTagEntryKey;
 import com.dm.earth.conitator.impl.datagen.entry_keys.tags.FluidTagEntryKey;
 import com.dm.earth.conitator.impl.datagen.entry_keys.tags.ItemTagEntryKey;
@@ -50,6 +53,18 @@ public class DefaultEntryKeys {
 
 	public static FluidTagEntryKey fluidTag() {
 		return new FluidTagEntryKey();
+	}
+
+	public static TranslationEntryKey translation(String language) {
+		return TranslationEntryKey.create(language);
+	}
+
+	public static ModelEntryKey model() {
+		return new ModelEntryKey();
+	}
+
+	public static BlockLootTableEntryKey blockLootTable() {
+		return new BlockLootTableEntryKey();
 	}
 
 }
