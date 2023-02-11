@@ -21,7 +21,9 @@
 		},
 		"intermediate_mappings": "net.fabricmc:intermediary",
 		"entrypoints": {
-			"client_init": "com.dm.earth.conitator.impl.client.ClientInit"
+			"client_init": "com.dm.earth.conitator.impl.client.ClientInit",
+			"init": "com.dm.earth.conitator.ConitatorMod",
+			"fabric-datagen": "com.dm.earth.conitator.ConitatorMod"
 		},
 		"depends": [
 			{
