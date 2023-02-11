@@ -1,5 +1,10 @@
 package com.dm.earth.conitator.api.builder.core;
 
+import java.util.ArrayList;
+import java.util.function.Consumer;
+
+import org.quiltmc.qsl.registry.attachment.api.RegistryEntryAttachment;
+
 import com.dm.earth.conitator.api.Conitator;
 
 import net.minecraft.util.Identifier;
@@ -7,11 +12,12 @@ import net.minecraft.util.Identifier;
 /**
  * Registration builder for a registry. (eg. items, blocks)
  */
-public abstract class RegistrationBuilder<T> {
+public abstract class RegistrationBuilder<O, T extends O> {
 
 	protected T instance = null;
 	protected final Conitator conitator;
 	protected final Identifier id;
+	protected ArrayList<Consumer<T>> afterBuiltList = new ArrayList<>();
 
 	/**
 	 * @param conitator The conitator of this builder
@@ -22,14 +28,24 @@ public abstract class RegistrationBuilder<T> {
 		this.id = id;
 	}
 
+	public void afterBuilt(Consumer<T> consumer) {
+		this.afterBuiltList.add(consumer);
+	}
+
+	public <U, A extends RegistryEntryAttachment<O, U>> void attachREA(A attachment, U arg) {
+		this.afterBuilt(r -> attachment.put(r, arg));
+	}
+
 	/**
 	 * Get or build the registration.
 	 *
 	 * @return The object of registration
 	 */
 	public final T get() {
-		if (instance == null)
+		if (instance == null) {
 			this.instance = this.build();
+			this.afterBuiltList.forEach(c -> c.accept(instance));
+		}
 		return this.instance;
 	}
 

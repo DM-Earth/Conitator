@@ -8,20 +8,28 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
+import org.quiltmc.qsl.block.content.registry.api.BlockContentRegistries;
+import org.quiltmc.qsl.block.content.registry.api.FlammableBlockEntry;
+import org.quiltmc.qsl.block.content.registry.api.ReversibleBlockEntry;
+import org.quiltmc.qsl.block.content.registry.api.enchanting.EnchantingBooster;
 import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
 import org.quiltmc.qsl.block.extensions.api.client.BlockRenderLayerMap;
 
 import com.dm.earth.conitator.api.Conitator;
 import com.dm.earth.conitator.api.DefaultEntryKeys;
 import com.dm.earth.conitator.api.builder.core.RegistrationBuilder;
+import com.dm.earth.conitator.impl.client.color.SimpleColorProvider;
 import com.dm.earth.conitator.impl.client.events.ClientInitCallback;
 import com.dm.earth.conitator.impl.datagen.entry_keys.BlockLootTableEntryKey;
 import com.dm.earth.conitator.impl.datagen.entry_keys.ModelEntryKey;
 import com.dm.earth.conitator.impl.datagen.entry_keys.TranslationEntryKey;
 import com.dm.earth.conitator.impl.datagen.entry_keys.tags.BlockTagEntryKey;
 
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.data.client.model.BlockStateModelGenerator;
 import net.minecraft.item.BlockItem;
@@ -33,7 +41,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
-public class ConitatorBlockBuilder<T extends Block> extends RegistrationBuilder<T> {
+public class ConitatorBlockBuilder<T extends Block> extends RegistrationBuilder<Block, T> {
 
 	@FunctionalInterface
 	public static interface BlockItemModelBuildConsumer {
@@ -94,12 +102,12 @@ public class ConitatorBlockBuilder<T extends Block> extends RegistrationBuilder<
 	}
 
 	public ConitatorBlockBuilder<T> tagBoth(Collection<Identifier> tags) {
-		this.item.tag(tags.toArray(new Identifier[0]));
+		safeExecuteItem(i -> i.tag(tags.toArray(new Identifier[0])));
 		return this.tag(tags.toArray(new Identifier[0]));
 	}
 
 	public ConitatorBlockBuilder<T> tagBoth(Identifier... tags) {
-		this.item.tag(tags);
+		safeExecuteItem(i -> i.tag(tags));
 		return this.tag(tags);
 	}
 
@@ -111,9 +119,9 @@ public class ConitatorBlockBuilder<T extends Block> extends RegistrationBuilder<
 	}
 
 	public ConitatorBlockBuilder<T> model(BlockItemModelBuildConsumer consumer) {
-		this.conitator.getEntry(DefaultEntryKeys.MODEL)
+		safeExecuteItem(i -> this.conitator.getEntry(DefaultEntryKeys.MODEL)
 				.ifPresent(entry -> ((ModelEntryKey) entry)
-						.registerBlockStateCallback(g -> consumer.accept(g, this.item.get(), this.get())));
+						.registerBlockStateCallback(g -> consumer.accept(g, i.get(), this.get()))));
 		return this;
 	}
 
@@ -125,9 +133,9 @@ public class ConitatorBlockBuilder<T extends Block> extends RegistrationBuilder<
 	}
 
 	public ConitatorBlockBuilder<T> loot(BlockItemLootTableBuildConsumer consumer) {
-		this.conitator.getEntry(DefaultEntryKeys.BLOCK_LOOT_TABLE)
+		safeExecuteItem(i -> this.conitator.getEntry(DefaultEntryKeys.BLOCK_LOOT_TABLE)
 				.ifPresent(entry -> ((BlockLootTableEntryKey) entry)
-						.registerCallback(g -> consumer.accept(g, this.item.get(), this.get())));
+						.registerCallback(g -> consumer.accept(g, i.get(), this.get()))));
 		return this;
 	}
 
@@ -145,11 +153,57 @@ public class ConitatorBlockBuilder<T extends Block> extends RegistrationBuilder<
 		return this;
 	}
 
+	public ConitatorBlockBuilder<T> color(BlockColorProvider provider) {
+		ClientInitCallback.registerSafe(() -> ColorProviderRegistry.BLOCK.register(provider, this.get()));
+		return this;
+	}
+
+	public ConitatorBlockBuilder<T> colorBoth(SimpleColorProvider provider) {
+		safeExecuteItem(i -> i.color(provider));
+		return this.color(provider);
+	}
+
+	// REAs
+	public ConitatorBlockBuilder<T> flattenable(BlockState flattened) {
+		this.attachREA(BlockContentRegistries.FLATTENABLE, flattened);
+		return this;
+	}
+
+	public ConitatorBlockBuilder<T> oxidizable(ReversibleBlockEntry entry) {
+		this.attachREA(BlockContentRegistries.OXIDIZABLE, entry);
+		return this;
+	}
+
+	public ConitatorBlockBuilder<T> waxable(ReversibleBlockEntry entry) {
+		this.attachREA(BlockContentRegistries.WAXABLE, entry);
+		return this;
+	}
+
+	public ConitatorBlockBuilder<T> strippable(Block block) {
+		this.attachREA(BlockContentRegistries.STRIPPABLE, block);
+		return this;
+	}
+
+	public ConitatorBlockBuilder<T> flammable(FlammableBlockEntry entry) {
+		this.attachREA(BlockContentRegistries.FLAMMABLE, entry);
+		return this;
+	}
+
+	public ConitatorBlockBuilder<T> enchantingBoost(EnchantingBooster booster) {
+		this.attachREA(BlockContentRegistries.ENCHANTING_BOOSTERS, booster);
+		return this;
+	}
+
+	protected void safeExecuteItem(Consumer<ConitatorItemBuilder<? extends BlockItem>> consumer) {
+		if (this.item != null)
+			consumer.accept(this.item);
+	}
+
 	@Override
 	protected T build() {
 		T block = factory.apply(settings);
 		Registry.register(Registries.BLOCK, this.id, block);
-		this.item.get();
+		safeExecuteItem(i -> i.get());
 
 		this.conitator.getEntry(DefaultEntryKeys.BLOCK)
 				.ifPresent(entry -> entry.getValue().add(this.id));

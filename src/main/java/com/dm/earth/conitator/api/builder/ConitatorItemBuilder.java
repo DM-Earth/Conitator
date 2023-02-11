@@ -6,17 +6,21 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.quiltmc.qsl.item.content.registry.api.ItemContentRegistries;
 import org.quiltmc.qsl.item.setting.api.QuiltItemSettings;
 
 import com.dm.earth.conitator.api.Conitator;
 import com.dm.earth.conitator.api.DefaultEntryKeys;
 import com.dm.earth.conitator.api.builder.core.RegistrationBuilder;
+import com.dm.earth.conitator.impl.client.events.ClientInitCallback;
 import com.dm.earth.conitator.impl.datagen.entry_keys.ModelEntryKey;
 import com.dm.earth.conitator.impl.datagen.entry_keys.TranslationEntryKey;
 import com.dm.earth.conitator.impl.datagen.entry_keys.tags.ItemTagEntryKey;
 
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents.ModifyEntries;
+import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -26,7 +30,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
-public class ConitatorItemBuilder<T extends Item> extends RegistrationBuilder<T> {
+public class ConitatorItemBuilder<T extends Item> extends RegistrationBuilder<Item, T> {
 
 	public static <T extends Item> ConitatorItemBuilder<T> create(Conitator instance, Identifier id,
 			Function<QuiltItemSettings, T> factory) {
@@ -78,6 +82,21 @@ public class ConitatorItemBuilder<T extends Item> extends RegistrationBuilder<T>
 	public ConitatorItemBuilder<T> model(BiConsumer<ItemModelGenerator, Item> consumer) {
 		this.conitator.getEntry(DefaultEntryKeys.MODEL)
 				.ifPresent(entry -> ((ModelEntryKey) entry).registerItemCallback(g -> consumer.accept(g, this.get())));
+		return this;
+	}
+
+	public ConitatorItemBuilder<T> color(ItemColorProvider provider) {
+		ClientInitCallback.registerSafe(() -> ColorProviderRegistry.ITEM.register(provider, this.get()));
+		return this;
+	}
+
+	public ConitatorItemBuilder<T> fuel(int time) {
+		this.attachREA(ItemContentRegistries.FUEL_TIMES, time);
+		return this;
+	}
+
+	public ConitatorItemBuilder<T> compostable(float chance) {
+		this.attachREA(ItemContentRegistries.COMPOST_CHANCES, chance);
 		return this;
 	}
 
